@@ -1,0 +1,7 @@
+---
+title: "Simple document"
+author: JingYao Geng
+date: '`r format(Sys.time(), "%Y-%m-%d") `'
+output: github_document
+---
+
