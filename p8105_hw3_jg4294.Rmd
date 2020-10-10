@@ -1,5 +1,5 @@
 ---
-title: "Simple document"
+title: "Homework 3"
 author: JingYao Geng
 date: '`r format(Sys.time(), "%Y-%m-%d") `'
 output: github_document
@@ -36,7 +36,7 @@ This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns.
 
 Observations are the level of items in orders by user. There are user / order variables -- user ID, order ID, order day, and order hour. There are also item variables -- name, aisle, department, and some numeric codes.
 
-How many aisles are there, and which aisles are the most items ordered from?
+##### How many aisles are there, and which aisles are the most items ordered from?
 ```{r Q1_1}
 instacart %>%
   count(aisle) %>% # 134 by 2, count all kind of aisles
@@ -44,8 +44,9 @@ instacart %>%
 ```
 * There are a total of 134 aisles in the instacart online grocery service with most items ordered from 'fresh vegetables' aisle.
 
-Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.
+##### Make a plot
 
+Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.
 ```{r Q1_2}
 instacart %>%
   count(aisle) %>% 
@@ -59,8 +60,9 @@ instacart %>%
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) # just this,looks not bad
 ```
 
-Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
+##### Make a table
 
+Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
 ```{r Q1_3}
 instacart %>%
   filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>%
@@ -74,8 +76,9 @@ instacart %>%
   knitr::kable() #printing table
 ```
 
-Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table)
+##### Apples vs ice cream
 
+Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table)
 ```{r Q1_4}
 instacart %>%
   filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>%
@@ -87,6 +90,69 @@ instacart %>%
   )
 ```
 * On average, Coffee Ice Cream is ordered around 2:00 in the afternoon, and Pink Lady Apples is ordered about the noon.
+
+### Problem 2
+
+##### Load and tidy accelerometer data
+```{r  Q2_import_and_clean, message=FALSE}
+acc_df = 
+  read_csv("./data/accel_data.csv") %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    starts_with("activity_"),
+    names_to = "activity_minutes", 
+    names_prefix = "activity_",
+    values_to = "activity_amounts") %>% 
+  mutate(
+    weekday_weekend = case_when(
+      day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday") ~ "weekday",
+      day %in% c("Sunday", "Saturday") ~ "weekend"),
+    
+    week = factor(week),
+    day_id = as.factor(day_id),
+    day = as.factor(day),
+    activity_minutes = as.numeric(activity_minutes),
+    activity_amounts = as.numeric(activity_amounts),
+    weekday_weekend = as.factor(weekday_weekend),
+    
+    day = forcats::fct_relevel(day, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+  ) %>%
+  arrange(week, day)
+```
+The original accelerometer dataset has 36 observations and 1443 columns. However, some of the variables are easy to understand. The tidy-version of the accelerometer dataset has `r nrow(acc_df)` rows and `r ncol(acc_df)` columns.
+
+##### Tranditional analyses: create a table for totals
+```{r Q2_total_var_table, message = FALSE}
+acc_df %>%
+  group_by(week,day) %>%
+  summarize(total_activity = sum(activity_amounts)) %>%
+  pivot_wider(
+    names_from = day,
+    values_from = total_activity) %>%
+  knitr::kable(align = 'c')
+```
+
+Saturday seems to be the day that man has least activity amounts, especially for the last 2 weeks. All the weekdays seem to have quite similar activity amounts in general. Other trends might be difficult to find throughout the table.
+
+
+##### Create a plot showing 24-hour activity time courses for each day
+```{r Q2_plot}
+acc_df %>% 
+  ggplot(aes(x = activity_minutes, y = activity_amounts, color = day)) + 
+  geom_smooth(se = F) +
+
+  labs(title = "24-hour Activity Inspection ",
+       caption = "Data from accelerometer",
+       x = "Hour",
+       y = "Activity amounts") + 
+  theme(plot.title = element_text(hjust = 0.5, size = 18)) +
+  scale_x_continuous(
+    breaks = seq(60,1440,60), 
+    labels = as.character(c(1:24))) +
+  viridis::scale_color_viridis(discrete = TRUE)
+```
+
+We can see the trends for weekdays are quite tied together(except Friday), which is more activities around 8am to 9pm. However, Friday has the highest activity amounts around 11am, which is also the highest activity amounts among the weekdays. Saturday seems to be the day that has the least activity amounts among the week. Sunday has the highest activity amounts around 9pm, which is also the overall highest activity amounts among the week.
 
 
 
