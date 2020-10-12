@@ -159,30 +159,48 @@ We can see that most activities were during 8am to 9pm a day for the 5 weeks. Th
 
 
 ### Problem 3
-```{r}
+```{r ny_noaa_start}
 data("ny_noaa")
-```
-
-*   Read and clean the data  
-```{r 3.1}
-ny_df = ny_noaa %>% 
-  janitor::clean_names() %>% 
-  separate(date, into = c("year", "month", "day"), sep = "-") %>% 
-  mutate(prcp = as.numeric(prcp),
-         tmax = as.numeric(tmax),
-         tmin = as.numeric(tmin),
-         prcp = prcp / 10,
-         tmin = tmin / 10,
-         tmax = tmax / 10)
-  #skimr::skim(ny_df)
 ```
 **A short description of the dataset**
 
-The ny_noaa dataset contains `r ncol(ny_df)` variables and `r nrow(ny_df)` observation value.
+The ny_noaa dataset contains `r ncol(ny_noaa)` variables and `r nrow(ny_noaa)` observation value. It displays the New York weather information from Jan. 1981 to Dec. 31 2010.
 
 Important variables: 
 
-* prcp: The daily precipitation volume in the unique location. 
-* snow: The daily snowfall volume in the unique location.
-* snwd: South to North Water diversion in the specific date.
+* prcp: The daily precipitation volume (mm). 
+* snow: The daily snowfall volume (mm).
+* snwd: The daily snow depth (mm).
+* tmax: Maximum temperature (degree C).
+* tmin: Minimum temperature (degree C).
+
+There are a lot of missing values in variable 'prcp', 'snow', 'snwd', 'tmax', and 'tmin'. In order to analyze the ny_noaa dataset and do some calculations based on the those variables, we need to remove all missing values.
+
+
+Read and clean the data,  
+```{r 3.1_clean_and_tidy}
+ny_df = ny_noaa %>% 
+  janitor::clean_names() %>% 
+  separate(date, into = c("year", "month", "day"), sep = "-") %>% 
+  mutate(prcp = as.numeric(prcp, na.rm = TRUE),
+         tmax = as.numeric(tmax, na.rm = TRUE),
+         tmin = as.numeric(tmin, na.rm = TRUE),
+         # reasonable units:
+         prcp = prcp / 10,
+         tmin = tmin / 10,
+         tmax = tmax / 10)
+```
+
+* After the step of data clean and tidy, we organized the 'date' variable into 'year', 'month', and 'day' separately. Besides that, we convert variables 'prcp', 'tmin', and 'tmax' into mm, and degree C.
+
+For snowfall, what are the most commonly observed value?
+```{r 3.1_common_snowfall}
+ny_df %>% 
+  group_by(snow) %>%
+  summarize(n = n()) %>% # count the snowfall volume
+  filter(min_rank(desc(n)) < 2) # rank the count from large to small + the largest one
+```
+
+* We find the most commonly observed value in snowfall is 0mm. It's reasonable that snow only happens during winter session.
+
 
