@@ -93,7 +93,7 @@ instacart %>%
 
 ### Problem 2
 
-##### Load and tidy accelerometer data
+**Load and tidy accelerometer data**
 ```{r  Q2_import_and_clean, message=FALSE}
 acc_df = 
   read_csv("./data/accel_data.csv") %>%
@@ -120,9 +120,9 @@ acc_df =
   group_by(week) %>%
   arrange(day, .by_group = TRUE)
 ```
-The original accelerometer dataset has 36 observations and 1443 columns. However, some of the variables are easy to understand. The tidy-version of the accelerometer dataset has `r nrow(acc_df)` rows and `r ncol(acc_df)` columns.
+* The original accelerometer dataset has 36 observations and 1443 columns. However, some of the variables are easy to understand. The tidy-version of the accelerometer dataset has `r nrow(acc_df)` rows and `r ncol(acc_df)` columns.
 
-##### Tranditional analyses: create a table for totals
+**Tranditional analyses: create a table for totals**
 ```{r Q2_total_var_table, message = FALSE}
 acc_df %>%
   group_by(week,day) %>%
@@ -133,10 +133,10 @@ acc_df %>%
   knitr::kable(align = 'c')
 ```
 
-The activity amounts were pretty stable for Wednesday and Thursday during the 5-week period. Saturday seems to be the day that the man had least activity amounts, especially for the last 2 weeks. Overall, the men has less activity amounts in week 4 and 5. It seems to be reasonable that it's hard to stick to one thing for a long time. Other trends might be difficult to find throughout the table.
+* The activity amounts were pretty stable for Wednesday and Thursday during the 5-week period. Saturday seems to be the day that the man had least activity amounts, especially for the last 2 weeks. Overall, the men has less activity amounts in week 4 and 5. It seems to be reasonable that it's hard to stick to one thing for a long time. Other trends might be difficult to find throughout the table.
 
 
-##### Create a plot showing 24-hour activity time courses for each day
+**Create a plot showing 24-hour activity time courses for each day**
 ```{r Q2_plot}
 acc_df %>% 
   group_by(day_id, day, week) %>%
@@ -155,7 +155,7 @@ acc_df %>%
   viridis::scale_color_viridis(discrete = TRUE)
 ```
 
-We can see that most activities were during 8am to 9pm a day for the 5 weeks. The activity amounts were similar in most of the days, and the peaks of the activity amount usually happen around noon or in the afternoon. Other trends are hard to tell.
+* We can see that most activities were during 8am to 9pm a day for the 5 weeks. The activity amounts were similar in most of the days, and the peaks of the activity amount usually happen around noon or in the afternoon. Other trends are hard to tell.
 
 
 ### Problem 3
@@ -224,7 +224,7 @@ ggplot(temp_mean, aes(x = as.numeric(year), y = as.numeric(mean_tmax), color = i
   scale_y_continuous(breaks = c(-10, 0, 10, 20, 30),
                      labels = c("-10°C", "0°C", "10°C", "20°C", "30°C")) +
   labs(
-    title = "Max tempreture in NY weather stations in January and July (1991-2010)",
+    title = "Max tempreture in NY weather stations in January and July ",
     x = "Year",
     y = "Average Monthly Tempreture (°C)") + 
   theme(legend.position = "none")  +
