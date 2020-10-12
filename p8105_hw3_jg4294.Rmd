@@ -133,7 +133,7 @@ acc_df %>%
   knitr::kable(align = 'c')
 ```
 
-Saturday seems to be the day that the man had least activity amounts, especially for the last 2 weeks. All the weekdays seem to have quite similar activity amounts in general. The activity amounts were pretty stable for Wednesday and Thursday during the 5-week period. Other trends might be difficult to find throughout the table.
+The activity amounts were pretty stable for Wednesday and Thursday during the 5-week period. Saturday seems to be the day that the man had least activity amounts, especially for the last 2 weeks. Overall, the men has less activity amounts in week 4 and 5. It seems to be reasonable that it's hard to stick to one thing for a long time. Other trends might be difficult to find throughout the table.
 
 
 ##### Create a plot showing 24-hour activity time courses for each day
@@ -158,13 +158,6 @@ acc_df %>%
 We can see that most activities were during 8am to 9pm a day for the 5 weeks. The activity amounts were similar in most of the days, and the peaks of the activity amount usually happen around noon or in the afternoon. Other trends are hard to tell.
 
 
-
-
-
-
-
-
-
 ### Problem 3
 ```{r}
 data("ny_noaa")
@@ -181,5 +174,15 @@ ny_df = ny_noaa %>%
          prcp = prcp / 10,
          tmin = tmin / 10,
          tmax = tmax / 10)
-  skimr::skim(ny_df)
+  #skimr::skim(ny_df)
 ```
+**A short description of the dataset**
+
+The ny_noaa dataset contains `r ncol(ny_df)` variables and `r nrow(ny_df)` observation value.
+
+Important variables: 
+
+* prcp: The daily precipitation volume in the unique location. 
+* snow: The daily snowfall volume in the unique location.
+* snwd: South to North Water diversion in the specific date.
+
